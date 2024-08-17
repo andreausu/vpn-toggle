@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VPN Toggle</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            background-color: white;
+            padding: 2em;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        #statusText {
+            font-size: 1.5em;
+            margin: 1em 0;
+            padding: 0.5em;
+            border-radius: 5px;
+        }
+        .status-on {
+            color: white;
+            background-color: green;
+        }
+        .status-off {
+            color: white;
+            background-color: red;
+        }
+        #toggleButton {
+            padding: 1em 2em;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+        }
+        .button-on {
+            background-color: red;
+        }
+        .button-off {
+            background-color: green;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>VPN Control</h1>
+        <p id="statusText" class="status-off">Checking VPN status...</p>
+        <button id="toggleButton" class="button-off" onclick="toggleVPN()">Toggle VPN</button>
+    </div>
+    <script>
+        async function fetchVPNStatus() {
+            const response = await fetch("/status");
+            const statusInfo = await response.json();
+            const statusText = document.getElementById("statusText");
+            const toggleButton = document.getElementById("toggleButton");
+
+            if (statusInfo.vpn_status === "on") {
+                statusText.textContent = "VPN is currently ON";
+                statusText.className = "status-on";
+                toggleButton.textContent = "Turn OFF";
+                toggleButton.className = "button-on";
+            } else {
+                statusText.textContent = "VPN is currently OFF";
+                statusText.className = "status-off";
+                toggleButton.textContent = "Turn ON";
+                toggleButton.className = "button-off";
+            }
+        }
+
+        function toggleVPN() {
+            const statusText = document.getElementById("statusText").textContent;
+            const action = statusText.includes("OFF") ? "on" : "off";
+            const confirmMessage = action === "on" ? "Do you want to turn ON the VPN?" : "Do you want to turn OFF the VPN?";
+
+            if (confirm(confirmMessage)) {
+                fetch("/toggle", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ state: action }),
+                })
+                .then(response => response.text())
+                .then(data => {
+                    alert(data);
+                    fetchVPNStatus();
+                })
+                .catch(error => alert("Error: " + error));
+            }
+        }
+
+        // Fetch the VPN status when the page loads
+        window.onload = fetchVPNStatus;
+    </script>
+</body>
+</html>
