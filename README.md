@@ -1,6 +1,6 @@
 # Installazione rust toolchain e cross compile per il rpi
 
-```
+```shell
 brew uninstall rust
 brew install rustup
 
@@ -13,4 +13,4 @@ rsync -avz target/armv7-unknown-linux-gnueabihf/release/vpn-toggle root@192.168.
 
 # Installazione come service systemd
 
-See [here](https://gitlab.com/Usu/home-provisioning/-/tree/master/rpi-vpn?ref_type=heads).
+See [here](deploy/README.md).

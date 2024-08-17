@@ -1,0 +1,11 @@
+[Unit]
+Description=VPN Toggle
+After=network.target
+
+[Service]
+User=root
+ExecStart=/usr/local/bin/vpn-toggle
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
