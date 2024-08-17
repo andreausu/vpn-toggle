@@ -1,5 +1,4 @@
 use actix_web::{web, App, HttpServer, HttpResponse, Responder};
-// use actix_files as fs;
 use std::process::Command;
 use serde::{Deserialize, Serialize};
 
@@ -58,11 +57,6 @@ fn get_vpn_status() -> String {
         "on".to_string()
     }
 }
-
-// async fn index() -> Result<fs::NamedFile, std::io::Error> {
-//     fs::NamedFile::open("static/index.html")
-// }
-
 
 async fn index() -> impl Responder {
     let html = include_str!("../static/index.html");
